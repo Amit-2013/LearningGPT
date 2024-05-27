@@ -10,10 +10,13 @@ nltk.download('punkt')
 # Initialize Wikipedia API
 wiki = wikipediaapi.Wikipedia('en')
 
-# Specify user agent
-wiki.user_agent = 'my_custom_user_agent/1.0'
+# Specify a user agent with language information
+user_agent = 'MyWikiBot/1.0 (Language: en; https://github.com/Amit-2013/LearningGPT)'
 
-# Function to extract text from a Wikipedia article
+# Set user agent directly after creating the Wikipedia object
+wiki.headers = {'User-Agent': user_agent}
+
+# Function to fetch Wikipedia data
 def get_wikipedia_text(topic):
     page = wiki.page(topic)
     if page.exists():
@@ -32,7 +35,7 @@ def generate_response(query, corpus, vectorizer):
     query_vec = vectorizer.transform([query])
     similarities = cosine_similarity(query_vec, corpus)
     most_similar_index = similarities.argmax()
-    return corpus[most_similar_index]
+    return corpus[most_similar_index].toarray().flatten()  # Convert sparse matrix to array and flatten it
 
 # Main function
 def main():
